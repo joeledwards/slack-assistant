@@ -1,0 +1,30 @@
+{
+  "name": "slack-assistant",
+  "version": "1.0.0",
+  "description": "A Slack assistant bot powered by OpenAI's GPT model",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "tap test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeledwards/slack-assistant.git"
+  },
+  "keywords": [
+    "slack",
+    "assistant",
+    "gpt",
+    "openai",
+    "chat"
+  ],
+  "author": "Joel Edwards <joeledwards@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joeledwards/slack-assistant/issues"
+  },
+  "homepage": "https://github.com/joeledwards/slack-assistant#readme",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "durations": "^3.4.2"
+  }
+}

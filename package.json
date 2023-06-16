@@ -25,6 +25,7 @@
   "homepage": "https://github.com/joeledwards/slack-assistant#readme",
   "dependencies": {
     "axios": "^1.4.0",
-    "durations": "^3.4.2"
+    "durations": "^3.4.2",
+    "tap": "^16.3.6"
   }
 }

@@ -4,7 +4,8 @@
   "description": "A Slack assistant bot powered by OpenAI's GPT model",
   "main": "lib/index.js",
   "scripts": {
-    "test": "tap test/*.test.js"
+    "deploy": "npx serverless deploy",
+    "test": "tap test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,10 @@
   "homepage": "https://github.com/joeledwards/slack-assistant#readme",
   "dependencies": {
     "axios": "^1.4.0",
-    "durations": "^3.4.2",
+    "durations": "^3.4.2"
+  },
+  "devDependencies": {
+    "serverless": "^3.32.2",
     "tap": "^16.3.6"
   }
 }

@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "deploy": "npx serverless deploy",
-    "test": "tap test/**.test.js"
+    "test": "tap"
   },
   "repository": {
     "type": "git",

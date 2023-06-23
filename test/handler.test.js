@@ -1,21 +1,21 @@
 const tap = require('tap')
 
 const { getContext } = require('../lib/context')
-const slackEventHandler = require('../lib/handler').makeHandler()
+const { slackEventHandler } = require('../lib/handler')
 
 function baseSlackEvent () {
   return {
     headers: {
-      'x-slack-signature': 'deadbeef',
+      'x-slack-signature': 'v0=29be9d737e96c2a731d916dd2292b83912d58f335e30f30a7af2ebf85d005a6c',
       'x-slack-request-timestamp': '0',
     },
-    body: JSON.stringify({
+    body: Buffer.from(JSON.stringify({
       type: 'event_callback',
       event: {
         type: 'app_mention',
         text: 'Are you there?',
       },
-    }),
+    })),
   }
 }
 

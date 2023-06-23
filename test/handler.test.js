@@ -19,66 +19,76 @@ function baseSlackEvent () {
   }
 }
 
-tap.test('slackEventHandler should return a 201 for a valid request', async assert => {
-  const context = await getContext({ isTest: true })
-  const slackData = {}
+tap.test('slackEventHandler', async t => {
+   t.test('should return a 201 for a valid request', async assert => {
+    const context = await getContext({ isTest: true })
+    const slackData = {}
 
-  const future = {}
-  future.promise = new Promise(resolve => {
-    future.resolve = resolve
+    const future = {}
+    future.promise = new Promise(resolve => {
+      future.resolve = resolve
+    })
+
+    context.services.slack = {
+      sendResponse: async ({ context, event, message }) => {
+        slackData.context = context
+        slackData.event = event
+        slackData.message = message
+        future.resolve()
+      }
+    }
+
+    const event = baseSlackEvent()
+
+    assert.same(
+      await slackEventHandler({ context, event }),
+      { status: 201, data: { message: 'Prompt received' } }
+    )
+
+    await future.promise
+
+    assert.same(slackData.message, 'howdy')
   })
 
-  context.services.slack = {
-    sendResponse: async ({ context, event, message }) => {
-      slackData.context = context
-      slackData.event = event
-      slackData.message = message
-      future.resolve()
+  t.test('should retain context across multiple conversations', async assert => {
+    const context = await getContext({ isTest: true })
+    const event = baseSlackEvent()
+    const modelData = {}
+
+    const future = {}
+    future.promise = new Promise(resolve => {
+      future.resolve = resolve
+    })
+    context.services.slack = {
+      sendResponse: async ({ context, event, message }) => {
+        future.resolve()
+      }
     }
-  }
+    await slackEventHandler({ context, event })
+    await future.promise
 
-  const event = baseSlackEvent()
+    future.promise = new Promise(resolve => {
+      future.resolve = resolve
+    })
+    context.services.slack = {
+      sendResponse: async ({ context, event, message }) => {
+        future.resolve()
+      }
+    }
+    await slackEventHandler({ context, event })
 
-  assert.same(
-    await slackEventHandler({ context, event }),
-    { status: 201, data: { message: 'Prompt received' } }
-  )
+    context.services.model = {
+      engageModel: async ({ messages }) => {
+        modelData.messages = messages
+      }
+    }
+    await future.promise
 
-  await future.promise
-
-  assert.same(slackData.message, 'howdy')
-})
-
-tap.test('slackEventHandler should retain context across multiple conversations', async assert => {
-  const context = await getContext({ isTest: true })
-  const event = baseSlackEvent()
-  const modelData = {}
-
-  const future = {}
-  future.promise = new Promise(resolve => {
-    future.resolve = resolve
+    assert.same(modelData.messages, [
+      {role: 'user', content: 'Are you there?' },
+      {role: 'assistant', content: 'hi there' },
+      {role: 'user', content: 'Are you there?' },
+      {role: 'assistant', content: 'hi there' },
+    ])
   })
-
-  context.services.model = {
-    engageModel: async ({ messages }) => {
-      modelData.messages = messages
-    }
-  }
-
-  context.services.slack = {
-    sendResponse: async ({ context, event, message }) => {
-      future.resolve()
-    }
-  }
-
-  await slackEventHandler({ context, event })
-  await slackEventHandler({ context, event })
-  await future.promise
-
-  assert.same(modelData.messages, [
-    {role: 'user', content: 'Are you there?' },
-    {role: 'assistant', content: 'hi there' },
-    {role: 'user', content: 'Are you there?' },
-    {role: 'assistant', content: 'hi there' },
-  ])
 })

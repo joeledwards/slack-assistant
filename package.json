@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "deploy": "npx serverless deploy",
-    "test": "tap test/**/*.test.js"
+    "test": "tap test/**.test.js"
   },
   "repository": {
     "type": "git",
@@ -25,9 +25,11 @@
   },
   "homepage": "https://github.com/joeledwards/slack-assistant#readme",
   "dependencies": {
+    "@buzuli/aws": "^4.5.2",
     "axios": "^1.4.0",
     "durations": "^3.4.2",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "serverless": "^3.32.2",

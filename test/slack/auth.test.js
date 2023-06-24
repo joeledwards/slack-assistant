@@ -119,11 +119,14 @@ tap.test('validateSignature check handler test signature', async assert => {
     },
     event: {
       headers: {
-        'x-slack-signature': 'v0=29be9d737e96c2a731d916dd2292b83912d58f335e30f30a7af2ebf85d005a6c',
+        'x-slack-signature': 'v0=4abef3ee8ef9927a0988dc21c0f47240b9c7a737b96695ba7fb2b6f1b7401418',
         'x-slack-request-timestamp': '0',
       },
       body: Buffer.from(JSON.stringify({
+        ts: 0.0,
         type: 'event_callback',
+        channel: 'C1',
+        thread_ts: 0.0,
         event: {
           type: 'app_mention',
           text: 'Are you there?',

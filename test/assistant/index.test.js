@@ -1,10 +1,11 @@
 const tap = require('tap')
 
 const { getContext } = require('../../lib/context')
-const { eventSubscriptionHandler } = require('../../lib/slack/event')
+const { queryAssistant } = require('../../lib/assistant')
 
-tap.test('eventSubscriptionHandler should query the model, then send a 201 response', async assert => {
+tap.test('queryAssistant should ', async assert => {
   const context = await getContext({ isTest: true })
+
   const event = {
     ts: 0.0,
     type: 'event_callback',
@@ -16,8 +17,7 @@ tap.test('eventSubscriptionHandler should query the model, then send a 201 respo
     },
   }
 
-  assert.same(
-    await eventSubscriptionHandler({ context, event }),
-    { status: 201, data: { message: 'Prompt received' } }
-  )
+  const result = await queryAssistant({ context, event })
+
+  assert.same(result, { message: 'hi there' })
 })

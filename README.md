@@ -22,6 +22,10 @@ Slack assistant is meant to run on AWS Lambda in function URL mode, persisting c
 
 You can create the `config.yaml` file if you wish to customize your deployment.
 
+### AWS Profile
+
+You can specy which AWS configuration profile to use for deployment via `config.awsProfile` in `config.yml`.
+
 ### Lambda
 
 The default name for the lambda is `slack_assistant_<stage>`. You can customize this via `config.lambdaFunctionName` in `config.yml`.
@@ -30,9 +34,8 @@ The default timeout for the lambda is `120` seconds. You can customize this via 
 
 ### DynamoDB Table
 
-The DynamoDB table is a partition key-only table, which must have the following schema:
-- `key`: `S`  - primary key column
-- `data`: `S` - payload column
+The DynamoDB table is a partition-key-only table, which must have the following schema:
+- `key`: `S` - partition key
 
 The default name for the table is `slack_assistant_conversation_history_<stage>`. You can customize this via `config.dynamodbTableName` in `config.yml`.
 

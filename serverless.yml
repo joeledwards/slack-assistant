@@ -1,17 +1,11 @@
 service: slack-assistant
 frameworkVersion: '3'
 
-defaults:
-  awsProfile: 'default'
-  lambdaFunctionName: 'slack_assistant_${sls:stage}'
-  lambdaFunctionTimeout: '120'
-  dynamodbTableName: 'slack_assistant_conversation_history_${sls:stage}'
-
 custom:
-  awsProfile: ${file(config.yml):config.awsProfile, self:defaults.awsProfile}
-  lambdaFunctionName: ${file(config.yml):config.lambdaFunctionName, self:defaults.lambdaFunctionName}
-  lambdaFunctionTimeout: ${file(config.yml):config.lambdaFunctionTimeout, self:defaults.lambdaFunctionTimeout}
-  dynamodbTableName: ${file(config.yml):config.dynamodbTableName, self:defaults.dynamodbTableName}
+  awsProfile: ${file(config.yml):config.awsProfile, 'default'}
+  lambdaFunctionName: ${file(config.yml):config.lambdaFunctionName, 'slack_assistant_${sls:stage}'}
+  lambdaFunctionTimeout: ${file(config.yml):config.lambdaFunctionTimeout, '120'}
+  dynamodbTableName: ${file(config.yml):config.dynamodbTableName, 'slack_assistant_conversation_history_${sls:stage}'}
   openaiApiKey: ${file(config.yml):config.openaiApiKey}
   openaiModel: ${file(config.yml):config.openaiModel}
   openaiTemperature: ${file(config.yml):config.openaiTemperature}
@@ -22,7 +16,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs16.x
-  profile: ${custom:awsProfile}
+  profile: ${self:custom.awsProfile}
   iam:
     role:
       statements:
@@ -38,7 +32,8 @@ provider:
             - Fn::GetAtt: [ UsersTable, Arn ]
 
 functions:
-  ${self.custom.lambdaFunctionName}:
+  slack_assistant:
+    name: ${self:custom.lambdaFunctionName}
     handler: lib/index.handler
     url: true
     timeout: ${self:custom.lambdaFunctionTimeout}
@@ -64,8 +59,6 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: key
-            AttributeType: S
-          - AttributeName: data
             AttributeType: S
         KeySchema:
           - AttributeName: key

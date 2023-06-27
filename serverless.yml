@@ -19,6 +19,7 @@ provider:
   runtime: nodejs16.x
   profile: ${self:custom.awsProfile}
   region: ${self:custom.awsRegion}
+  deploymentMethod: direct
   iam:
     role:
       statements:
@@ -32,6 +33,11 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [ HistoryTable, Arn ]
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+          Resource:
+            - 'arn:aws:s3:::slackassistant-*'
 
 functions:
   SlackAssistant:

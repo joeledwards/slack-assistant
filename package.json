@@ -4,7 +4,9 @@
   "description": "A Slack assistant bot powered by OpenAI's GPT model",
   "main": "lib/index.js",
   "scripts": {
-    "deploy": "npx serverless deploy",
+    "deploy": "npx serverless deploy --verbose",
+    "doctor": "npx serverless doctor --verbose",
+    "remove": "npx serverless remove --verbose",
     "test": "tap"
   },
   "repository": {

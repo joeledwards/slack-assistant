@@ -18,6 +18,23 @@ The following environment variables are used to configure the Lambda.
 
 Slack assistant is meant to run on AWS Lambda in function URL mode, persisting conversation context to AWS DynamoDB table. You will need to have a local AWS profile configured which has permission to deploy a new Lambda and create a DynamoDB table.
 
+### Deploy / Update
+
+To deploy, run
+
+```shell
+npm run deploy
+```
+
+### Remove deployment
+
+To remove the deployment, and clean up cloud resources
+
+```shell
+npm run remove
+```
+
+
 ### Config Customization
 
 You can create the `config.yaml` file if you wish to customize your deployment.

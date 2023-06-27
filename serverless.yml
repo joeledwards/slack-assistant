@@ -1,12 +1,28 @@
-service: slack-events
+service: slack-assistant
 frameworkVersion: '3'
 
+defaults:
+  awsProfile: 'default'
+  lambdaFunctionName: 'slack_assistant_${sls:stage}'
+  lambdaFunctionTimeout: '120'
+  dynamodbTableName: 'slack_assistant_conversation_history_${sls:stage}'
+
 custom:
-  tableName: 'assistant-conversation-history-${sls:stage}'
+  awsProfile: ${file(config.yml):config.awsProfile, self:defaults.awsProfile}
+  lambdaFunctionName: ${file(config.yml):config.lambdaFunctionName, self:defaults.lambdaFunctionName}
+  lambdaFunctionTimeout: ${file(config.yml):config.lambdaFunctionTimeout, self:defaults.lambdaFunctionTimeout}
+  dynamodbTableName: ${file(config.yml):config.dynamodbTableName, self:defaults.dynamodbTableName}
+  openaiApiKey: ${file(config.yml):config.openaiApiKey}
+  openaiModel: ${file(config.yml):config.openaiModel}
+  openaiTemperature: ${file(config.yml):config.openaiTemperature}
+  openaiSystemMessage: ${file(config.yml):config.openaiSystemMessage}
+  slackSigningKey: ${file(config.yml):config.slackSigningKey}
+  slackWebhook: ${file(config.yml):config.slackWebhook}
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs16.x
+  profile: ${custom:awsProfile}
   iam:
     role:
       statements:
@@ -20,14 +36,26 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [ UsersTable, Arn ]
-  environment:
-    USERS_TABLE: ${self:custom.tableName}
 
 functions:
-  api:
-    handler: index.handler
-    events:
-      - httpApi: '*'
+  ${self.custom.lambdaFunctionName}:
+    handler: lib/index.handler
+    url: true
+    timeout: ${self:custom.lambdaFunctionTimeout}
+    environment:
+      SLACK_ASSISTANT_DYNAMODB_TABLE: ${self:custom.dynamodbTableName}
+      SLACK_ASSISTANT_OPENAI_API_KEY: ${self:custom.openaiApiKey}
+      SLACK_ASSISTANT_OPENAI_MODEL: ${self:custom.openaiModel}
+      SLACK_ASSISTANT_OPENAI_SYSTEM_MESSAGE: ${self:custom.openaiSystemMessage}
+      SLACK_ASSISTANT_OPENAI_TEMPERATURE: ${self:custom.openaiTemperature}
+      SLACK_ASSISTANT_SLACK_SIGNING_KEY: ${self:custom.slackSigningKey}
+      SLACK_ASSISTANT_SLACK_WEBHOOK: ${self:custom.slackWebhook}
+
+package:
+  include:
+    - lib/**
+  exclude:
+    - node_modules/aws-sdk/**
 
 resources:
   Resources:
@@ -35,10 +63,12 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: userId
+          - AttributeName: key
+            AttributeType: S
+          - AttributeName: data
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: key
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableName}
+        TableName: ${self:custom.dynamodbTableName}

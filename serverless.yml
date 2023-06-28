@@ -7,6 +7,8 @@ custom:
   lambdaFunctionName: ${file(config.yml):config.lambdaFunctionName, 'slack-assistant-${sls:stage}'}
   lambdaFunctionTimeout: ${file(config.yml):config.lambdaFunctionTimeout, '120'}
   dynamodbTableName: ${file(config.yml):config.dynamodbTableName, 'slack_assistant_conversation_history_${sls:stage}'}
+  codePrefix: ${file(config.yml):config.codePrefix, 'slack-assistant/'}
+  codeBucket: ${file(config.yml):config.codeBucket}
   openaiApiKey: ${file(config.yml):config.openaiApiKey}
   openaiModel: ${file(config.yml):config.openaiModel}
   openaiTemperature: ${file(config.yml):config.openaiTemperature}
@@ -20,6 +22,10 @@ provider:
   profile: ${self:custom.awsProfile}
   region: ${self:custom.awsRegion}
   deploymentMethod: direct
+  deploymentBucket:
+    name: ${self:custom.codeBucket}
+    serverSideEncryption: 'aws:kms'
+  deploymentPrefix: ${self:custom.codePrefix}
   iam:
     role:
       statements:
@@ -37,7 +43,7 @@ provider:
           Action:
             - s3:GetObject
           Resource:
-            - 'arn:aws:s3:::slackassistant-*'
+            - 'arn:aws:s3:::${self:custom.codeBucket}/*'
 
 functions:
   SlackAssistant:

@@ -9,6 +9,7 @@ custom:
   dynamodbTableName: ${file(config.yml):config.dynamodbTableName, 'slack_assistant_conversation_history_${sls:stage}'}
   codePrefix: ${file(config.yml):config.codePrefix, 'slack-assistant/'}
   codeBucket: ${file(config.yml):config.codeBucket}
+  lambdaRoleArn: ${file(config.yml):config.lambdaRoleArn}
   openaiApiKey: ${file(config.yml):config.openaiApiKey}
   openaiModel: ${file(config.yml):config.openaiModel}
   openaiTemperature: ${file(config.yml):config.openaiTemperature}
@@ -51,6 +52,7 @@ functions:
     handler: lib/index.handler
     url: true
     timeout: ${self:custom.lambdaFunctionTimeout}
+    role: ${self:custom.lambdaRoleArn}
     environment:
       SLACK_ASSISTANT_DYNAMODB_TABLE: ${self:custom.dynamodbTableName}
       SLACK_ASSISTANT_OPENAI_API_KEY: ${self:custom.openaiApiKey}

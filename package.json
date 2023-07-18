@@ -34,7 +34,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "serverless": "^3.32.2",
+    "serverless": "^3.33.0",
     "tap": "^16.3.6"
   }
 }

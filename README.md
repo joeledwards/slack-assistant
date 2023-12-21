@@ -6,7 +6,7 @@ A Slack assistant bot which responds in threads and persists conversation histor
 
 The following environment variables are used to configure the Lambda.
 
-* `SLACK_ASSISTANT_DYNAMODB_TABLE_NAME`   - The name of the DynamoDB table to use for .
+* `SLACK_ASSISTANT_DYNAMODB_TABLE_NAME`   - The name of the DynamoDB table to use for storing conversation context.
 * `SLACK_ASSISTANT_OPENAI_API_KEY`        - The authentication key for the Open AI API.
 * `SLACK_ASSISTANT_OPENAI_MODEL`          - The Open AI model to use (default is gpt-3.5-turbo-16k).
 * `SLACK_ASSISTANT_OPENAI_SYSTEM_MESSAGE` - An optional, custom system message to tune the behavior of the model's response.
